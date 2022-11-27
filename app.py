@@ -76,9 +76,10 @@ def predict(frame):
         # w = rect.right()
         # h = rect.bottom()
         x, y, w, h = rect['box']
-        print(x, y, w, h)
+        w = x + w
+        h = y + h
 
-        face = frame[y:y+h, x:x+w]
+        face = frame[y:h, x:w]
         print(face.shape)
         face = cv2.resize(face, dsize=dest_size)
         # Lây face embeding
