@@ -1,8 +1,8 @@
 streamlit_option_menu
 grad-cam
 imageio
+opencv-python-headless
 numpy
-opencv-python-headless==4.6.0.66
 pandas
 streamlit-aggrid==0.2.3.post2
 plotly
