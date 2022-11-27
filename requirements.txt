@@ -1,3 +1,5 @@
 opencv-python-headless
 streamlit_webrtc
 joblib
+tensorflow
+mtcnn
