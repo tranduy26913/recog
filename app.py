@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 import numpy as np
-#import joblib
+import joblib
 import cv2
 from streamlit_webrtc import webrtc_streamer
 import av
@@ -13,10 +13,10 @@ from tensorflow import keras
 import time
 import mtcnn
 st.set_option('deprecation.showPyplotGlobalUse', False)
-#import dlib
-#predictor = dlib.shape_predictor('models/shape_predictor_68_face_landmarks.dat')
-#detector = dlib.get_frontal_face_detector()
-detector = mtcnn.MTCNN()
+import dlib
+predictor = dlib.shape_predictor('models/shape_predictor_68_face_landmarks.dat')
+detector = dlib.get_frontal_face_detector()
+#detector = mtcnn.MTCNN()
 # detect faces in the image
 #faces = detector.detect_faces(pixels)
 facenet_model = keras.models.load_model('models/facenet_keras.h5')
@@ -45,7 +45,7 @@ def callback(frame):
     except:
         pass
 
-    return av.VideoFrame.from_ndarray(img, format="rgb24")
+    return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 
 def get_embedding(img):
@@ -63,21 +63,22 @@ def get_embedding(img):
 
 
 def predict(frame):
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    #dets = detector(gray, 0)
-    print(frame.shape)
+    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+    dets = detector(gray, 0)
+    #print(frame.shape)
 
-    dets = detector.detect_faces(frame)
+    #dets = detector.detect_faces(frame)
     print(len(dets))
     if len(dets) > 0:
         rect = dets[0]
-        # x = rect.left()
-        # y = rect.top()
-        # w = rect.right()
-        # h = rect.bottom()
-        x, y, w, h = rect['box']
-        w = x + w
-        h = y + h
+        x = rect.left()
+        y = rect.top()
+        w = rect.right()
+        h = rect.bottom()
+        # x, y, w, h = rect['box']
+        # w = x + w
+        # h = y + h
 
         face = frame[y:h, x:w]
         print(face.shape)
@@ -108,8 +109,11 @@ def predict(frame):
     return frame
 
 
+# webrtc_streamer(key="example",
+#                 video_frame_callback=callback,
+#                 rtc_configuration={  # Add this line
+#                     "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
+#                 })
 webrtc_streamer(key="example",
                 video_frame_callback=callback,
-                rtc_configuration={  # Add this line
-                    "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-                })
+               )

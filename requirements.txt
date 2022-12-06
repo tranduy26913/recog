@@ -13,3 +13,4 @@ scikit-image
 streamlit_webrtc
 joblib
 mtcnn
+dlib-binary
