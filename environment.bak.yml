@@ -1,3 +1,4 @@
+name: recog
 channels:
   - conda-forge
   - defaults
