@@ -35,7 +35,7 @@ with open(pkl_filename, 'rb') as file:
 # Regco face
 
 
-st.title("My first Streamlit app")
+st.title("Face Recognition App")
 
 
 def callback(frame):
@@ -66,7 +66,7 @@ def predict(frame):
     #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
     dets = detector(gray, 0)
-    #print(frame.shape)
+    print(frame.shape)
 
     #dets = detector.detect_faces(frame)
     print(len(dets))
@@ -117,3 +117,16 @@ webrtc_streamer(key="example",
 # webrtc_streamer(key="example",
 #                 video_frame_callback=callback,
 #                )
+
+st.subheader('Using Image')
+uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+    # To read file as bytes:
+    image = Image.open(uploaded_file)
+    image = np.array(image)
+    
+   
+    #print(bytes_data)
+    image = predict(image)
+    st.image(image)
+######################################################
