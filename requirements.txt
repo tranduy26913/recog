@@ -6,7 +6,7 @@ numpy
 pandas
 streamlit-aggrid==0.2.3.post2
 plotly
-tensorflow==2.4.1
+tensorflow==2.6.0
 matplotlib
 imutils
 scikit-image
