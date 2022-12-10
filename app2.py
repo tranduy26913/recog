@@ -1,49 +1,23 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 from PIL import Image
 import numpy as np
-import joblib
 import cv2
 from streamlit_webrtc import webrtc_streamer
 import av
 
 import pickle
 from tensorflow import keras
-from os import listdir
 import cv2
 import numpy as np
 import pickle
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.model_selection import train_test_split
-from keras.applications.vgg16 import VGG16
-from keras.layers import Input, Flatten, Dense, Dropout
-from keras.models import Model
-from keras.callbacks import ModelCheckpoint
-import matplotlib.pyplot as plt
-import random
-from keras.models import  load_model
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.layers import Input, Flatten, Dense, Dropout
+from tensorflow.keras.models import Model
+from tensorflow.keras.models import  load_model
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 import dlib
-predictor = dlib.shape_predictor('models/shape_predictor_68_face_landmarks.dat')
-detector = dlib.get_frontal_face_detector()
-#detector = mtcnn.MTCNN()
-# detect faces in the image
-#faces = detector.detect_faces(pixels)
-facenet_model = keras.models.load_model('models/facenet_keras.h5')
-dest_size = (160, 160)
-print(dest_size)
-# Load SVM model từ file
-pkl_filename = 'faces_svm.pkl'
-with open(pkl_filename, 'rb') as file:
-    svm_model = pickle.load(file)
-
-# Load ouput_enc từ file để hiển thị nhãn
-pkl_filename = 'output_enc.pkl'
-with open(pkl_filename, 'rb') as file:
-    output_enc = pickle.load(file)
-
 
 # Dinh nghia class
 class_name = ['00000','10000','20000','50000']
@@ -75,14 +49,11 @@ def get_model():
 
 # Load weights model da train
 my_model = get_model()
-my_model.load_weights("weights-19-1.00.hdf5")
-
+my_model.load_weights("weights-49-0.97.hdf5")
 
 # Regco face
 
-
 st.title("Money Classify")
-
 
 def callback(frame):
     img = frame.to_ndarray(format="bgr24")
@@ -111,13 +82,13 @@ def predict(frame):
         # Show image
         font = cv2.FONT_HERSHEY_SIMPLEX
         org = (50, 50)
-        fontScale = 1.5
+        fontScale = 1
         color = (0, 255, 0)
         thickness = 2
 
-        cv2.putText(frame, class_name[np.argmax(predict)], org, font,
+        cv2.putText(frame, class_name[np.argmax(predict)], org,font,
                     fontScale, color, thickness, cv2.LINE_AA)
-    return frame,class_name[np.argmax(predict[0])]
+    return frame,class_name[np.argmax(predict[0])],np.max(predict)
 
 
 uploaded_file = st.file_uploader("Choose a file")
@@ -127,8 +98,8 @@ if uploaded_file is not None:
     image = np.array(image)
     
     #print(bytes_data)
-    image , predicted = predict(image)
-    text = 'Kết quả: ' + str(predicted)
-    st.image(uploaded_file)
+    image , predicted,probability = predict(image)
+    text = 'Kết quả: ' + str(predicted) +'({probability:.2f}%)'.format(probability=probability*100)
+    st.image(image)
     st.subheader(text)
 ######################################################
