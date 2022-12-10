@@ -7,6 +7,7 @@ pandas
 streamlit-aggrid==0.2.3.post2
 plotly
 tensorflow==2.6.0
+keras==2.6
 matplotlib
 imutils
 scikit-image
